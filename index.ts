@@ -3,22 +3,35 @@ import env from "dotenv";
 env.config();
 
 import { connect } from "./config/database"
-connect()
-import Article from "./models/articles.model"
-
-const app: Express = express();
-const port: number = 3000;
+import { ApolloServer } from "apollo-server-express";
+import typeDefs from "./typeDefs";
+import resolver from "./resolver";
 
 
-app.get("/articles", async (req: Request, res: Response) => {
-    const articles = await Article.find({
-        deleted: false,
+
+const startServer = async () => {
+    connect()
+
+    const app: Express = express();
+    const port: number = 3000;
+
+    // GraphQL
+
+    const apolloServer = new ApolloServer({
+        typeDefs: typeDefs,
+        resolvers: resolver
     })
-    res.json({
-        articles: articles,
-    })
-})
 
-app.listen(port, () => {
-    console.log(`Chạy trên cổng ${port}`);
-})
+    await apolloServer.start()
+
+    apolloServer.applyMiddleware({
+        app: app,
+        path: "/graphql"
+    })
+
+    app.listen(port, () => {
+        console.log(`Chạy trên cổng ${port}`);
+    })
+}
+
+startServer()
