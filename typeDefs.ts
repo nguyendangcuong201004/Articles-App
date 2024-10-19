@@ -10,7 +10,8 @@ const typeDefs = gql`
     }
 
     type Query {
-        getListArticle: [Article]
+        getListArticle: [Article],
+        getArticle(id: String): Article
     }
 `
 
