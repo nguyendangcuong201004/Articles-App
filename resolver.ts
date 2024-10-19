@@ -17,6 +17,38 @@ const resolver = {
             })
             return article
         }
+    },
+
+    Mutation: {
+        createArticle: async (_, args) => {
+            const { article } = args;
+            const record = new Article(article);
+            await record.save()
+            return record;
+        },
+
+        deleteArticle: async (_, args) => {
+            const { id } = args;
+            await Article.deleteOne({
+                _id: id
+            })
+            return "Delete Successful !"
+        },
+
+        updateArticle: async (_, args) => {
+            const { id, article } = args;
+
+            await Article.updateOne({
+                _id: id
+            }, article);
+
+            const record = await Article.findOne({
+                _id: id,
+                deleted: false
+            })
+
+            return record;
+        }
     }
 }
 
