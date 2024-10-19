@@ -1,8 +1,12 @@
+import Article from "./models/articles.model"
 
 const resolver = {
     Query: {
-        hello: () => {
-            return "Nguyen Dang Cuong"
+        getListArticle: async () => {
+            const articles = await Article.find({
+                deleted: false,
+            })
+            return articles
         }
     }
 }
